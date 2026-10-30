@@ -7,6 +7,13 @@ import authRoutes from "./routes/auth";
 import adminRoutes from "./routes/admin";
 import { prisma } from "./lib/prisma";
 
+// Railway managed Postgres auto-injects POSTGRES_URL into every service.
+// Alias it to DATABASE_URL so any code (and the Prisma CLI) that reads
+// DATABASE_URL gets a valid postgresql:// connection string.
+if (process.env.POSTGRES_URL) {
+  process.env.DATABASE_URL = process.env.POSTGRES_URL;
+}
+
 const app = express();
 const PORT = Number(process.env.PORT) || 8080;
 const NODE_ENV = process.env.NODE_ENV || "development";

@@ -10,6 +10,9 @@ const globalForPrisma = globalThis as unknown as {
 export const prisma =
   globalForPrisma.prisma ??
   new PrismaClient({
+    // Railway managed Postgres auto-injects POSTGRES_URL into every service;
+    // use it directly so we never depend on a literal "$POSTGRES_URL" string.
+    datasourceUrl: process.env.POSTGRES_URL || process.env.DATABASE_URL,
     log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
   });
 
