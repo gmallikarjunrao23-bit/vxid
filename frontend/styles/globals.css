@@ -1,0 +1,248 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   VXID — DARK LUXURY GLOBAL STYLES
+   ============================================================ */
+
+:root {
+  --void: #050505;
+  --surface: #0f0f0f;
+  --card: #141414;
+  --gold: #c9a84c;
+  --white: #f5f5f5;
+  --muted: #666666;
+  --border: #1f1f1f;
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  background-color: var(--void);
+  color: var(--white);
+  font-family: "Inter", system-ui, sans-serif;
+  overflow-x: hidden;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Hide default cursor when custom cursor active */
+body.vxid-cursor-active,
+body.vxid-cursor-active a,
+body.vxid-cursor-active button,
+body.vxid-cursor-active .magnetic {
+  cursor: none;
+}
+
+/* ============================================================
+   CUSTOM CURSOR
+   ============================================================ */
+.vxid-cursor-dot,
+.vxid-cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  border-radius: 9999px;
+  pointer-events: none;
+  z-index: 99999;
+  mix-blend-mode: difference;
+  will-change: transform;
+}
+
+.vxid-cursor-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--gold);
+  transform: translate(-50%, -50%);
+}
+
+.vxid-cursor-ring {
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(201, 168, 76, 0.5);
+  background: rgba(201, 168, 76, 0);
+  transform: translate(-50%, -50%);
+  transition: width 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    height 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.vxid-cursor-ring.is-hover {
+  width: 64px;
+  height: 64px;
+  background: rgba(201, 168, 76, 0.12);
+  border-color: rgba(201, 168, 76, 0.8);
+}
+
+.vxid-cursor-ring.is-clicking {
+  width: 20px;
+  height: 20px;
+  background: rgba(201, 168, 76, 0.3);
+}
+
+/* ============================================================
+   FILM GRAIN OVERLAY
+   ============================================================ */
+.vxid-grain {
+  position: fixed;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.45'/%3E%3C/svg%3E");
+  opacity: 0.06;
+  pointer-events: none;
+  z-index: 99998;
+  animation: grain 8s steps(10) infinite;
+}
+
+/* ============================================================
+   TYPOGRAPHY & HELPERS
+   ============================================================ */
+.display {
+  font-family: "Clash Display", sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.02;
+}
+
+.eyebrow {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+::selection {
+  background: var(--gold);
+  color: var(--void);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--void);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted);
+}
+
+/* Gold shimmer text for hero accent */
+.text-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--gold) 0%,
+    #f0d878 50%,
+    var(--gold) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 6s linear infinite;
+}
+
+/* Marquee gradient mask edges */
+.marquee-mask {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 8%,
+    #000 92%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 8%,
+    #000 92%,
+    transparent
+  );
+}
+
+/* Tilt card shine */
+.tilt-shine {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at var(--rx, 50%) var(--ry, 50%),
+    rgba(201, 168, 76, 0.12),
+    transparent 60%
+  );
+  pointer-events: none;
+}
+
+/* Magnetic button base */
+.magnetic {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  will-change: transform;
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Form inputs */
+.vxid-input {
+  width: 100%;
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  color: var(--white);
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+.vxid-input::placeholder {
+  color: #4a4a4a;
+}
+.vxid-input:focus {
+  outline: none;
+  border-color: var(--gold);
+  background-color: var(--surface);
+}
+.vxid-input option {
+  background-color: var(--surface);
+  color: var(--white);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .vxid-grain,
+  .text-shimmer {
+    animation: none !important;
+  }
+  * {
+    scroll-behavior: auto !important;
+  }
+}
