@@ -1,39 +1,68 @@
+# VXID — Railway deployment configuration
+#
+# This file defines both services for the project. Railway reads it when
+# deploying the repo. Each service deploys from its own subdirectory.
+#
+# IMPORTANT: The backend runs prisma migrate + seed on every container start
+# (in the startCommand). This is idempotent — migrate only applies new
+# migrations, and seed upserts the admin user. No separate deploy step needed.
+#
+# DATABASE_URL: Railway managed Postgres auto-injects POSTGRES_URL into every
+# service at runtime. Set DATABASE_URL to the actual postgres:5432 connection
+# URL (Railway resolves the service name "postgres" internally). See README.
+
 [build]
 builder = "NIXPACKS"
 
+# ─────────────────────────────────────────────
+# Frontend — Next.js 14 App Router
+# ─────────────────────────────────────────────
 [[services]]
 name = "frontend"
 source = "frontend"
+
 [services.build]
 installCommand = "npm install"
 buildCommand = "npm install && npm run build"
+
 [services.deploy]
 startCommand = "npm run start"
 healthcheckPath = "/"
+healthcheckTimeout = 180
+
 envVars = [
-  "NEXT_PUBLIC_API_URL = https://<your-backend-service-name>.railway.app",
+  "PORT = 3000",
+  "NEXT_PUBLIC_API_URL = https://<your-backend-domain>.up.railway.app",
 ]
 
+# ─────────────────────────────────────────────
+# Backend — Express + Prisma + PostgreSQL
+# ─────────────────────────────────────────────
 [[services]]
 name = "backend"
 source = "backend"
+
 [services.build]
-installCommand = "npm install"
-buildCommand = "npm install && npx prisma generate && npx prisma migrate deploy && npm run build"
+installCommand = "npm install --include=dev"
+buildCommand = "npm install --include=dev && npm run build"
+
 [services.deploy]
-startCommand = "npm run start"
+startCommand = "sh -c './node_modules/.bin/prisma migrate deploy && node dist/prisma/seed.js && node dist/index.js'"
 healthcheckPath = "/api/health"
+healthcheckTimeout = 120
+
 envVars = [
-  "DATABASE_URL = <PostgreSQL-plugin-URI>",
-  "JWT_SECRET = <64-char-random>",
-  "SMTP_HOST = smtp.gmail.com",
-  "SMTP_PORT = 587",
-  "SMTP_USER = <gmail>",
-  "SMTP_PASS = <app-password>",
+  "DATABASE_URL = postgresql://postgres:<POSTGRES_PASSWORD>@postgres:5432/vxid?schema=public",
+  "JWT_SECRET = <64-char-random-secret>",
   "ADMIN_EMAIL = admin@vxid.studio",
+  "ADMIN_SEED_EMAIL = admin@vxid.studio",
+  "ADMIN_SEED_PASSWORD = <choose-a-strong-password>",
   "PORT = 8080",
   "NODE_ENV = production",
-  "FRONTEND_URL = https://<your-frontend-service-name>.railway.app",
-  "ADMIN_SEED_EMAIL = admin@vxid.studio",
-  "ADMIN_SEED_PASSWORD = <choose-password>",
+  "FRONTEND_URL = https://<your-frontend-domain>.up.railway.app",
+  # SMTP (optional — leave empty for no-op mailer fallback)
+  "SMTP_HOST = ",
+  "SMTP_PORT = ",
+  "SMTP_USER = ",
+  "SMTP_PASS = ",
 ]
